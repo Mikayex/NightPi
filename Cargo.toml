@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "nightpi-server",
+    "nightpi-wasm",
+]
