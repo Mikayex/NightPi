@@ -14,6 +14,7 @@ category = "CI"
 dependencies = [
     "default::print-env-flow",
     "build",
+    "check-format"
 ]
 
 ## Dependencies
@@ -136,4 +137,24 @@ cwd = "${NIGHTPI_DIR}"
 extend = "default::format"
 private = false
 description = "Runs the cargo rustfmt plugin in nightpi-wasm."
+cwd = "${WASM_DIR}"
+
+[tasks.check-format]
+description = "Runs cargo fmt to check appropriate code format."
+category = "Test"
+dependencies = [
+    "check-format-nightpi",
+    "check-format-wasm"
+]
+
+[tasks.check-format-nightpi]
+extend = "default::check-format"
+private = false
+description = "Runs cargo fmt to check appropriate code format in nightpi."
+cwd = "${NIGHTPI_DIR}"
+
+[tasks.check-format-wasm]
+extend = "default::check-format"
+private = false
+description = "Runs cargo fmt to check appropriate code format in nightpi-wasm."
 cwd = "${WASM_DIR}"
