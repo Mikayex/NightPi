@@ -110,7 +110,7 @@ description = "Build nightpi executable."
 category = "Build"
 cwd = "${NIGHTPI_DIR}"
 command = "cross"
-args = ["build", "--target=${CROSS_TARGET}", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+args = ["build", "--target=${CROSS_TARGET}", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 dependencies = ["install-cross"]
 
 [tasks.build-nightpi-release]
@@ -118,7 +118,7 @@ description = "Build nightpi executable (release)."
 category = "Build"
 cwd = "${NIGHTPI_DIR}"
 command = "cross"
-args = ["build", "--release", "--target=${CROSS_TARGET}", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+args = ["build", "--release", "--target=${CROSS_TARGET}", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 dependencies = ["install-cross"]
 
 [tasks.build-wasm]
@@ -247,5 +247,5 @@ description = "Runs all available tests in nightpi."
 category = "Test"
 cwd = "${NIGHTPI_DIR}"
 command = "cross"
-args = ["test", "--target=${CROSS_TARGET}", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+args = ["test", "--target=${CROSS_TARGET}", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
 dependencies = ["install-cross"]
