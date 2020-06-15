@@ -13,6 +13,51 @@ WASM_DIR = "${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY}/wasm"
 [tasks.default]
 alias = "build"
 
+## Deploy/Run
+[tasks.deploy]
+category = "Run"
+condition = { env_set = ["NIGHTPI_DEPLOY_IP", "NIGHTPI_DEPLOY_DIR"] }
+dependencies = ["build"]
+cwd = "${NIGHTPI_DIR}"
+script_runner = "@shell"
+script = [
+'''
+ssh ${NIGHTPI_DEPLOY_IP} mkdir -p "${NIGHTPI_DEPLOY_DIR}"
+scp target/${CROSS_TARGET}/debug/nightpi ${NIGHTPI_DEPLOY_IP}:${NIGHTPI_DEPLOY_DIR}/nightpi
+ssh ${NIGHTPI_DEPLOY_IP} chmod +x "${NIGHTPI_DEPLOY_DIR}/nightpi"
+'''
+]
+
+[tasks.deploy-release]
+category = "Run"
+condition = { env_set = ["NIGHTPI_DEPLOY_IP", "NIGHTPI_DEPLOY_DIR"] }
+dependencies = ["build-release"]
+cwd = "${NIGHTPI_DIR}"
+script_runner = "@shell"
+script = [
+'''
+ssh ${NIGHTPI_DEPLOY_IP} mkdir -p "${NIGHTPI_DEPLOY_DIR}"
+scp target/${CROSS_TARGET}/release/nightpi ${NIGHTPI_DEPLOY_IP}:${NIGHTPI_DEPLOY_DIR}/nightpi
+ssh ${NIGHTPI_DEPLOY_IP} chmod +x "${NIGHTPI_DEPLOY_DIR}/nightpi"
+'''
+]
+
+[tasks.run]
+category = "Run"
+condition = { env_set = ["NIGHTPI_DEPLOY_IP", "NIGHTPI_DEPLOY_DIR"] }
+dependencies = ["deploy"]
+cwd = "${NIGHTPI_DIR}"
+command = "ssh"
+args = ["${NIGHTPI_DEPLOY_IP}", "${NIGHTPI_DEPLOY_DIR}/nightpi"]
+
+[tasks.run-release]
+category = "Run"
+condition = { env_set = ["NIGHTPI_DEPLOY_IP", "NIGHTPI_DEPLOY_DIR"] }
+dependencies = ["deploy-release"]
+cwd = "${NIGHTPI_DIR}"
+command = "ssh"
+args = ["${NIGHTPI_DEPLOY_IP}", "${NIGHTPI_DEPLOY_DIR}/nightpi"]
+
 ## CI
 [tasks.ci]
 description = "Build and run tests."
