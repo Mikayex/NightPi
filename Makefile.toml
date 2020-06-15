@@ -60,18 +60,18 @@ dependencies = [
 [tasks.build-nightpi]
 description = "Build nightpi executable."
 category = "Build"
-install_crate = { crate_name = "cross", binary = "cross", test_arg = "--help" }
 cwd = "${NIGHTPI_DIR}"
 command = "cross"
 args = ["build", "--target=${CROSS_TARGET}", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+dependencies = ["install-cross"]
 
 [tasks.build-nightpi-release]
 description = "Build nightpi executable (release)."
 category = "Build"
-install_crate = { crate_name = "cross", binary = "cross", test_arg = "--help" }
 cwd = "${NIGHTPI_DIR}"
 command = "cross"
 args = ["build", "--release", "--target=${CROSS_TARGET}", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+dependencies = ["install-cross"]
 
 [tasks.build-wasm]
 extend = "default::wasm-pack-base"
