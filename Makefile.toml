@@ -1,11 +1,14 @@
+[config]
+default_to_workspace = false
+
 [config.modify_core_tasks]
 private = true
 namespace = "default"
 
 [env]
 CROSS_TARGET = "arm-unknown-linux-gnueabihf"
-NIGHTPI_DIR = "${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY}/nightpi"
-WASM_DIR = "${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY}/nightpi-wasm"
+NIGHTPI_DIR = "${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY}"
+WASM_DIR = "${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY}/wasm"
 
 [tasks.default]
 alias = "build"
