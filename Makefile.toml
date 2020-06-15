@@ -115,6 +115,7 @@ dependencies = ["clean-wasm-pkg"]
 [tasks.clean-wasm-pkg]
 description = "Cleans the WASM pkg directory."
 category = "Cleanup"
+condition = { files_exist = ["${WASM_DIR}/pkg/package.json"] }
 cwd = "${WASM_DIR}"
 script_runner = "@shell"
 script = [
