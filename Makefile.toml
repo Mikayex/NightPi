@@ -1,2 +1,130 @@
+[config.modify_core_tasks]
+private = true
+namespace = "default"
+
 [env]
-CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = "true"
+CROSS_TARGET = "arm-unknown-linux-gnueabihf"
+NIGHTPI_DIR = "${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY}/nightpi"
+WASM_DIR = "${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY}/nightpi-wasm"
+
+## Dependencies
+[tasks.install-cross]
+description = "Installs cross crate."
+category = "Dependencies"
+install_crate = { crate_name = "cross", binary = "cross", test_arg = "-V" }
+
+[tasks.install-wasm-pack]
+extend = "default::install-wasm-pack"
+private = false
+category = "Dependencies"
+
+[tasks.install-rustfmt]
+extend = "default::install-rustfmt"
+private = false
+category = "Dependencies"
+
+## Build
+[tasks.build]
+clear = true
+description = "Build the project."
+category = "Build"
+dependencies = [
+    "build-nightpi",
+    "build-wasm"
+]
+
+[tasks.build-release]
+clear = true
+description = "Build the project (release)."
+category = "Build"
+dependencies = [
+    "build-nightpi-release",
+    "build-wasm-release"
+]
+
+[tasks.build-nightpi]
+description = "Build nightpi executable."
+category = "Build"
+install_crate = { crate_name = "cross", binary = "cross", test_arg = "--help" }
+cwd = "${NIGHTPI_DIR}"
+command = "cross"
+args = ["build", "--target=${CROSS_TARGET}", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+
+[tasks.build-nightpi-release]
+description = "Build nightpi executable (release)."
+category = "Build"
+install_crate = { crate_name = "cross", binary = "cross", test_arg = "--help" }
+cwd = "${NIGHTPI_DIR}"
+command = "cross"
+args = ["build", "--release", "--target=${CROSS_TARGET}", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+
+[tasks.build-wasm]
+extend = "default::wasm-pack-base"
+description = "Build WASM."
+category = "Build"
+cwd = "${WASM_DIR}"
+args = ["build", "--target=web", "--out-name=nightpi", "--dev"]
+
+[tasks.build-wasm-release]
+extend = "default::wasm-pack-base"
+description = "Build WASM (release)."
+category = "Build"
+cwd = "${WASM_DIR}"
+args = ["build", "--target=web", "--out-name=nightpi"]
+
+## Cleanup
+[tasks.clean]
+clear = true
+description = "Cleans the workspace."
+category = "Cleanup"
+dependencies = [
+    "clean-nightpi",
+    "clean-wasm"
+]
+
+[tasks.clean-nightpi]
+description = "Cleans the nightpi directory."
+category = "Cleanup"
+cwd = "${NIGHTPI_DIR}"
+command = "cargo"
+args = ["clean"]
+
+[tasks.clean-wasm]
+description = "Cleans the WASM directory."
+category = "Cleanup"
+cwd = "${WASM_DIR}"
+command = "cargo"
+args = ["clean"]
+dependencies = ["clean-wasm-pkg"]
+
+[tasks.clean-wasm-pkg]
+description = "Cleans the WASM pkg directory."
+category = "Cleanup"
+cwd = "${WASM_DIR}"
+script_runner = "@shell"
+script = [
+'''
+rm -rf pkg
+'''
+]
+
+## Format
+[tasks.format]
+description = "Runs the cargo rustfmt plugin."
+category = "Development"
+dependencies = [
+    "format-nightpi",
+    "format-wasm"
+]
+
+[tasks.format-nightpi]
+extend = "default::format"
+private = false
+description = "Runs the cargo rustfmt plugin in nightpi."
+cwd = "${NIGHTPI_DIR}"
+
+[tasks.format-wasm]
+extend = "default::format"
+private = false
+description = "Runs the cargo rustfmt plugin in nightpi-wasm."
+cwd = "${WASM_DIR}"

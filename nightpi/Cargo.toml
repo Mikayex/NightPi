@@ -1,5 +1,5 @@
 [package]
-name = "nightpi-server"
+name = "nightpi"
 version = "0.1.0"
 authors = ["Thomas Laroche <tho.laroche@gmail.com>"]
 edition = "2018"
