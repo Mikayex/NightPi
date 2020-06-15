@@ -18,7 +18,8 @@ dependencies = [
     "default::print-env-flow",
     "build",
     "check-format",
-    "clippy"
+    "clippy",
+    "test"
 ]
 
 ## Dependencies
@@ -184,3 +185,18 @@ extend = "default::clippy"
 private = false
 description = "Runs clippy code linter in nightpi-wasm."
 cwd = "${WASM_DIR}"
+
+[tasks.test]
+description = "Runs all available tests."
+category = "Test"
+dependencies = [
+    "test-nightpi"
+]
+
+[tasks.test-nightpi]
+description = "Runs all available tests in nightpi."
+category = "Test"
+cwd = "${NIGHTPI_DIR}"
+command = "cross"
+args = ["test", "--target=${CROSS_TARGET}", "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)", "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )"]
+dependencies = ["install-cross"]
