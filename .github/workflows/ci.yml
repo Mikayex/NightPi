@@ -18,8 +18,9 @@ jobs:
         override: true
     - name: Install cargo-make
       uses: davidB/rust-cargo-make@v1
+    - name: Install wasm-pack
+      uses: jetli/wasm-pack-action@v0.3.0
     - name: Run CI
-      if: matrix.rust != 'nightly'
       uses: actions-rs/cargo@v1
       with:
         command: make
