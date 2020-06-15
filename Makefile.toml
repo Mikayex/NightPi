@@ -7,6 +7,9 @@ CROSS_TARGET = "arm-unknown-linux-gnueabihf"
 NIGHTPI_DIR = "${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY}/nightpi"
 WASM_DIR = "${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY}/nightpi-wasm"
 
+[tasks.default]
+alias = "build"
+
 ## CI
 [tasks.ci]
 description = "Build and run tests."
