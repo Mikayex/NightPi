@@ -1,3 +1,11 @@
+env_scripts = [
+'''
+#!@duckscript
+home_dir = get_home_dir
+set_env HOME_DIR ${home_dir}
+'''
+]
+
 [config]
 default_to_workspace = false
 
@@ -18,29 +26,19 @@ alias = "build"
 category = "Run"
 condition = { env_set = ["NIGHTPI_DEPLOY_IP", "NIGHTPI_DEPLOY_DIR"] }
 dependencies = ["build"]
+env = { BUILD_TYPE = "debug" }
 cwd = "${NIGHTPI_DIR}"
-script_runner = "@duckscript"
-script = [
-'''
-home = get_home_dir
-makefile_dir = pwd
-exec --fail-on-error docker run --rm -i -e NIGHTPI_DEPLOY_IP -e NIGHTPI_DEPLOY_DIR -v "${home}/.ssh:/ssh:ro" -v "${makefile_dir}:/project:ro" instrumentisto/rsync-ssh sh /project/.makefile/deploy.sh /project/target/${CROSS_TARGET}/debug
-'''
-]
+command = "docker"
+args = ["run", "--rm", "-i", "-e", "NIGHTPI_DEPLOY_IP", "-e", "NIGHTPI_DEPLOY_DIR",
+        "-v", "${HOME_DIR}/.ssh:/ssh:ro",
+        "-v", "${CARGO_MAKE_WORKING_DIRECTORY}:/project:ro",
+        "instrumentisto/rsync-ssh",
+        "sh", "/project/.makefile/deploy.sh", "/project/target/${CROSS_TARGET}/${BUILD_TYPE}"]
 
 [tasks.deploy-release]
-category = "Run"
-condition = { env_set = ["NIGHTPI_DEPLOY_IP", "NIGHTPI_DEPLOY_DIR"] }
+extend = "deploy"
+env = { BUILD_TYPE = "release" }
 dependencies = ["build-release"]
-cwd = "${NIGHTPI_DIR}"
-script_runner = "@duckscript"
-script = [
-'''
-home = get_home_dir
-makefile_dir = pwd
-exec --fail-on-error docker run --rm -i -e NIGHTPI_DEPLOY_IP -e NIGHTPI_DEPLOY_DIR -v "${home}/.ssh:/ssh:ro" -v "${makefile_dir}:/project:ro" instrumentisto/rsync-ssh sh /project/.makefile/deploy.sh /project/target/${CROSS_TARGET}/release
-'''
-]
 
 [tasks.run]
 category = "Run"
