@@ -1,7 +1,14 @@
 use warp::Filter;
 
+mod assets;
+
 #[tokio::main]
 async fn main() {
     let hello = warp::path!(String).map(|path| format!("You called /{}", path));
-    warp::serve(hello).run(([0, 0, 0, 0], 3030)).await;
+    let assets = warp::path("assets")
+        .and(warp::path::tail())
+        .and_then(assets::serve);
+
+    let routes = assets.or(hello);
+    warp::serve(routes).run(([0, 0, 0, 0], 3030)).await;
 }
