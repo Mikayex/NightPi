@@ -7,8 +7,8 @@ namespace = "default"
 
 [env]
 CROSS_TARGET = "arm-unknown-linux-gnueabihf"
-NIGHTPI_DIR = "${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY}"
-WASM_DIR = "${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE_DIRECTORY}/wasm"
+NIGHTPI_DIR = "${CARGO_MAKE_WORKING_DIRECTORY}"
+WASM_DIR = "${CARGO_MAKE_WORKING_DIRECTORY}/wasm"
 
 [tasks.default]
 alias = "build"
@@ -140,20 +140,9 @@ description = "Copy the WASM module to the assets folder."
 category = "Build"
 dependencies = ["build-wasm"]
 cwd = "${NIGHTPI_DIR}"
-script = [
-'''
-mkdir -p assets/wasm
-cp -u wasm/pkg/*.js wasm/pkg/*.wasm assets/wasm/
-'''
-]
-
-[tasks.copy-wasm.windows]
-script = [
-'''
-powershell "New-Item -ItemType Directory -Force -Path assets\\wasm\\ | Out-Null"
-(robocopy /mir /njh /njs /ndl /nc /ns wasm/pkg/ assets/wasm/ *.js *.wasm) ^& IF %ERRORLEVEL% LEQ 1 exit 0
-'''
-]
+command = "docker"
+args = ["run", "--rm", "-it", "-v", "${CARGO_MAKE_WORKING_DIRECTORY}:/project", "instrumentisto/rsync-ssh",
+        "rsync", "-dvucE", "--del", "--delete-excluded", "--inplace", "--include=*.js", "--include=*.wasm", "--exclude=*", "/project/wasm/pkg/", "/project/assets/wasm"]
 
 [tasks.copy-wasm-release]
 extend = "copy-wasm"
