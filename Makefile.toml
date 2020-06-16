@@ -141,7 +141,7 @@ category = "Build"
 dependencies = ["build-wasm"]
 cwd = "${NIGHTPI_DIR}"
 command = "docker"
-args = ["run", "--rm", "-it", "-v", "${CARGO_MAKE_WORKING_DIRECTORY}:/project", "instrumentisto/rsync-ssh",
+args = ["run", "--rm", "-i", "-v", "${CARGO_MAKE_WORKING_DIRECTORY}:/project", "instrumentisto/rsync-ssh",
         "rsync", "-dvucE", "--del", "--delete-excluded", "--inplace", "--include=*.js", "--include=*.wasm", "--exclude=*", "/project/wasm/pkg/", "/project/assets/wasm"]
 
 [tasks.copy-wasm-release]
