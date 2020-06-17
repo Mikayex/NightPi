@@ -28,15 +28,22 @@ fn configuration(args: &Arguments) -> Config {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn error::Error>> {
+    if std::env::var("RUST_LOG").is_err() {
+        std::env::set_var("RUST_LOG", "info");
+    }
+    pretty_env_logger::init();
+
     let args = Arguments::from_args();
     let config = configuration(&args);
+
+    let http_logger = warp::log("http");
 
     let hello = warp::path!(String).map(|path| format!("You called /{}", path));
     let assets = warp::path("assets")
         .and(warp::path::tail())
         .and_then(assets::serve);
 
-    let routes = assets.or(hello);
+    let routes = assets.or(hello).with(http_logger);
 
     let address: IpAddr = config.server.ip.parse()?;
     warp::serve(routes).run((address, config.server.port)).await;
