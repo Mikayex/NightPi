@@ -39,7 +39,7 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
 
     let http_logger = warp::log("http");
 
-    let index = warp::path::end().map(|| web::IndexTemplate {});
+    let index = warp::path::end().map(|| web::IndexTemplate::new());
     let assets = warp::path("assets")
         .and(warp::path::tail())
         .and_then(assets::serve);

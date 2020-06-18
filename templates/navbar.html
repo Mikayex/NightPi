@@ -1,11 +1,3 @@
-{% macro nav_item(endpoint, text, url) %}
-<li class="nav-item">
-    <a class="nav-link {% if self.current_page_active(endpoint) %}active{% endif %}" href="{{ url }}">
-        {{- text -}}{% if self.current_page_active(endpoint) %}<span class="sr-only">(current)</span>{% endif %}
-    </a>
-</li>
-{% endmacro %}
-
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="#">NightPi</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -15,8 +7,12 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            {% call nav_item("index", "Home", "/") %}
-            {% call nav_item("settings", "Settings", "#") %}
+            <li class="nav-item">
+                <a class="nav-link" href="/" data-page="index">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-page="settings">Settings</a>
+            </li>
         </ul>
     </div>
 </nav>

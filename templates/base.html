@@ -11,11 +11,22 @@
 </head>
 
 <body>
+    {% include "navbar.html" %}
     {% block content %}{% endblock %}
 
     <script src="/assets/js/jquery-3.5.1.slim.min.js"></script>
     <script src="/assets/js/popper.min.js"></script>
     <script src="/assets/js/bootstrap.min.js"></script>
+    <script type="module">
+        import init, { navbar_update_active } from '/assets/wasm/nightpi.js';
+
+        async function run() {
+            await init();
+            navbar_update_active("{% block page %}{% endblock %}");
+        }
+
+        run();
+    </script>
 </body>
 
 </html>
