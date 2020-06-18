@@ -4,6 +4,10 @@ use web_sys::console;
 mod jquery;
 use jquery::jquery;
 
+// Use `wee_alloc` as the global allocator.
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
 #[wasm_bindgen]
 extern "C" {
     fn alert(s: &str);
