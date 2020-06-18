@@ -15,6 +15,12 @@ structopt = { version = "0.3", default-features = false }
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.5"
 pretty_env_logger = "0.4"
+askama = { version = "0.9", features = ["with-warp"]}
+askama_warp = "0.9"
+
+[patch.crates-io]
+askama = { git = "https://github.com/djc/askama", rev = "88a69fd6f8606ae0c543e83071a3b797fa64d17b"}
+askama_warp = { git = "https://github.com/djc/askama", rev = "88a69fd6f8606ae0c543e83071a3b797fa64d17b"}
 
 [workspace]
 members = [

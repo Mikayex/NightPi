@@ -1,4 +1,5 @@
 use crate::config::Config;
+use askama::Template;
 use std::error;
 use std::net::IpAddr;
 use std::path::PathBuf;
@@ -26,6 +27,12 @@ fn configuration(args: &Arguments) -> Config {
     }
 }
 
+#[derive(Template)]
+#[template(path = "hello.html")]
+struct HelloTemplate {
+    name: String,
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn error::Error>> {
     if std::env::var("RUST_LOG").is_err() {
@@ -38,7 +45,7 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
 
     let http_logger = warp::log("http");
 
-    let hello = warp::path!(String).map(|path| format!("You called /{}", path));
+    let hello = warp::path!(String).map(|name| HelloTemplate { name });
     let assets = warp::path("assets")
         .and(warp::path::tail())
         .and_then(assets::serve);
