@@ -1,5 +1,4 @@
 use crate::config::Config;
-use askama::Template;
 use std::error;
 use std::net::IpAddr;
 use std::path::PathBuf;
@@ -8,6 +7,7 @@ use warp::Filter;
 
 mod assets;
 mod config;
+mod web;
 
 #[derive(Debug, StructOpt)]
 #[structopt(about = "NightPi camera server.")]
@@ -27,12 +27,6 @@ fn configuration(args: &Arguments) -> Config {
     }
 }
 
-#[derive(Template)]
-#[template(path = "hello.html")]
-struct HelloTemplate {
-    name: String,
-}
-
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn error::Error>> {
     if std::env::var("RUST_LOG").is_err() {
@@ -45,12 +39,12 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
 
     let http_logger = warp::log("http");
 
-    let hello = warp::path!(String).map(|name| HelloTemplate { name });
+    let index = warp::path::end().map(|| web::IndexTemplate {});
     let assets = warp::path("assets")
         .and(warp::path::tail())
         .and_then(assets::serve);
 
-    let routes = assets.or(hello).with(http_logger);
+    let routes = assets.or(index).with(http_logger);
 
     let address: IpAddr = config.server.ip.parse()?;
     warp::serve(routes).run((address, config.server.port)).await;
