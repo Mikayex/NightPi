@@ -1,7 +1,7 @@
 use askama::Template;
 
 #[derive(Template)]
-#[template(path = "index.html", print = "code")]
+#[template(path = "index.html")]
 pub struct IndexTemplate {}
 
 impl IndexTemplate {
