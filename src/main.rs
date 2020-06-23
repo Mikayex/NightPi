@@ -61,12 +61,13 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
     let http_logger = warp::log("http");
 
     let index = warp::path::end().map(web::IndexTemplate::new);
+    let settings = warp::path("settings").map(web::SettingsTemplate::new);
     let assets = warp::path("assets")
         .and(warp::path::tail())
         .and_then(assets::serve);
     let favicons = warp::path::tail().and_then(assets::serve);
 
-    let routes = assets.or(index).or(favicons).with(http_logger);
+    let routes = assets.or(index).or(settings).or(favicons).with(http_logger);
 
     let address: SocketAddr = (config.server.ip.parse::<IpAddr>()?, config.server.port).into();
     let server = root::execute_as_root(|| warp::serve(routes).bind(address))?;

@@ -9,3 +9,13 @@ impl IndexTemplate {
         Self {}
     }
 }
+
+#[derive(Template)]
+#[template(path = "settings.html")]
+pub struct SettingsTemplate {}
+
+impl SettingsTemplate {
+    pub fn new() -> Self {
+        Self {}
+    }
+}

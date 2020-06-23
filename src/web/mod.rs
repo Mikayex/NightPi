@@ -1,3 +1,3 @@
 mod templates;
 
-pub use templates::IndexTemplate;
+pub use templates::*;

@@ -10,8 +10,14 @@
             <li class="nav-item">
                 <a class="nav-link" href="/" data-page="index">Home</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-page="settings">Settings</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" data-page="settings" id="settingsDropdown" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Settings
+                </a>
+                <div class="dropdown-menu" aria-labelledby="settingsDropdown">
+                    <a class="dropdown-item" href="/settings#system">System</a>
+                </div>
             </li>
         </ul>
     </div>
