@@ -1,12 +1,14 @@
 use crate::config::Config;
+use log::{error, info, warn};
 use std::error;
-use std::net::IpAddr;
+use std::net::{IpAddr, SocketAddr};
 use std::path::PathBuf;
 use structopt::StructOpt;
 use warp::Filter;
 
 mod assets;
 mod config;
+mod root;
 mod web;
 
 #[derive(Debug, StructOpt)]
@@ -37,6 +39,25 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
     let args = Arguments::from_args();
     let config = configuration(&args);
 
+    if !root::user_is_root() {
+        error!("This program must be run as root");
+        panic!();
+    }
+    match root::drop_root(&config) {
+        Ok(_) => {
+            if root::user_is_root() {
+                warn!("Still running with root privileges");
+            } else {
+                info!(
+                    "Changed user/group to {}:{}",
+                    config.user.unwrap(),
+                    config.group.unwrap()
+                )
+            }
+        }
+        Err(err) => warn!("Can't drop root ({}), continuing with root privileges", err),
+    };
+
     let http_logger = warp::log("http");
 
     let index = warp::path::end().map(web::IndexTemplate::new);
@@ -46,8 +67,10 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
 
     let routes = assets.or(index).with(http_logger);
 
-    let address: IpAddr = config.server.ip.parse()?;
-    warp::serve(routes).run((address, config.server.port)).await;
+    let address: SocketAddr = (config.server.ip.parse::<IpAddr>()?, config.server.port).into();
+    let server = root::execute_as_root(|| warp::serve(routes).bind(address))?;
+    log::info!("listening on http://{}", address);
+    tokio::task::spawn(server).await?;
 
     Ok(())
 }

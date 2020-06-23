@@ -46,7 +46,7 @@ condition = { env_set = ["NIGHTPI_DEPLOY_IP", "NIGHTPI_DEPLOY_DIR"] }
 dependencies = ["deploy"]
 cwd = "${NIGHTPI_DIR}"
 command = "ssh"
-args = ["-t", "-t", "${NIGHTPI_DEPLOY_IP}", "echo Started && '${NIGHTPI_DEPLOY_DIR}/nightpi'"]
+args = ["-t", "-t", "${NIGHTPI_DEPLOY_IP}", "echo Started && sudo '${NIGHTPI_DEPLOY_DIR}/nightpi'"]
 
 [tasks.run-release]
 category = "Run"
@@ -54,7 +54,7 @@ condition = { env_set = ["NIGHTPI_DEPLOY_IP", "NIGHTPI_DEPLOY_DIR"] }
 dependencies = ["deploy-release"]
 cwd = "${NIGHTPI_DIR}"
 command = "ssh"
-args = ["-t", "-t", "${NIGHTPI_DEPLOY_IP}", "echo Started && '${NIGHTPI_DEPLOY_DIR}/nightpi'"]
+args = ["-t", "-t", "${NIGHTPI_DEPLOY_IP}", "echo Started && sudo '${NIGHTPI_DEPLOY_DIR}/nightpi'"]
 
 ## CI
 [tasks.ci]

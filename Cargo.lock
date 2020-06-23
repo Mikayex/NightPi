@@ -765,6 +765,7 @@ version = "0.1.0"
 dependencies = [
  "askama",
  "askama_warp",
+ "log 0.4.8",
  "mime_guess 2.0.3",
  "pretty_env_logger",
  "rust-embed",
@@ -772,6 +773,7 @@ dependencies = [
  "structopt",
  "tokio",
  "toml",
+ "users",
  "warp",
 ]
 
@@ -1615,6 +1617,16 @@ name = "urlencoding"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3df3561629a8bb4c57e5a2e4c43348d9e29c7c29d9b1c4c1f47166deca8f37ed"
+
+[[package]]
+name = "users"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "aa4227e95324a443c9fcb06e03d4d85e91aabe9a5a02aa818688b6918b6af486"
+dependencies = [
+ "libc",
+ "log 0.4.8",
+]
 
 [[package]]
 name = "utf-8"
