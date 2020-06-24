@@ -25,11 +25,12 @@
     <script src="/assets/js/popper.min.js"></script>
     <script src="/assets/js/bootstrap.min.js"></script>
     <script type="module">
-        import init, { navbar_update_active } from '/assets/wasm/nightpi.js';
+        import init, * as nightpi from '/assets/wasm/nightpi.js';
 
         async function run() {
             await init();
-            navbar_update_active("{% block page %}{% endblock %}");
+            globalThis.nightpi = nightpi;
+            nightpi.navbar_update_active("{% block page %}{% endblock %}");
         }
 
         run();

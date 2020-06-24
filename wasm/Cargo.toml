@@ -9,6 +9,8 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 wasm-bindgen = "0.2.63"
+wasm-bindgen-futures = "0.4"
 js-sys = "0.3"
-web-sys = { version = "0.3", features = ["console", "DomTokenList", "Element"] }
+web-sys = { version = "0.3", features = ["console", "DomTokenList", "Element", "Location", "Window"] }
 wee_alloc = "0.4.5"
+reqwest = "0.10"

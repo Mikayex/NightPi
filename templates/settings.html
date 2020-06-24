@@ -3,8 +3,27 @@
 {% block title %}NightPi - Settings{% endblock %}
 
 {% block content %}
-<h1>Settings</h1>
-<h2 id="system">System</h2>
+<div class="container">
+    <h1>Settings</h1>
+    <h2 id="system">System</h2>
+
+    <div class="row">
+        <div class="dropdown col">
+            <button class="btn btn-danger dropdown-toggle" type="button" id="powerDropdown" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-power-off"></i> Power
+            </button>
+            <div class="dropdown-menu" aria-labelledby="powerDropdown">
+                <button type="button" class="dropdown-item" onclick="nightpi.reboot()">
+                    <i class="fas fa-sync"></i> Reboot
+                </button>
+                <button type="button" class="dropdown-item" onclick="nightpi.poweroff()">
+                    <i class="fas fa-power-off"></i> Power Off
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {%- block page -%}settings{%- endblock -%}

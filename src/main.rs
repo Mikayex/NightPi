@@ -9,6 +9,7 @@ use warp::Filter;
 mod assets;
 mod config;
 mod root;
+mod system;
 mod web;
 
 #[derive(Debug, StructOpt)]
@@ -67,7 +68,12 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
         .and_then(assets::serve);
     let favicons = warp::path::tail().and_then(assets::serve);
 
-    let routes = assets.or(index).or(settings).or(favicons).with(http_logger);
+    let routes = assets
+        .or(index)
+        .or(settings)
+        .or(web::api())
+        .or(favicons)
+        .with(http_logger);
 
     let address: SocketAddr = (config.server.ip.parse::<IpAddr>()?, config.server.port).into();
     let server = root::execute_as_root(|| warp::serve(routes).bind(address))?;
