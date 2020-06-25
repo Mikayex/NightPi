@@ -29,6 +29,9 @@ members = [
     "wasm"
 ]
 
+[profile.release]
+lto = true
+
 [profile.release.package.nightpi-wasm]
 # Tell `rustc` to optimize for small code size.
 opt-level = "s"
