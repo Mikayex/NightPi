@@ -29,3 +29,26 @@ pub fn poweroff() -> Result<(), io::Error> {
     let mut cmd = Command::new("poweroff");
     root::execute_as_root(|| execute_command(&mut cmd))?.and(Ok(()))
 }
+
+pub fn ssh_enabled() -> Result<bool, io::Error> {
+    let mut cmd = Command::new("systemctl");
+    cmd.arg("is-active").arg("--quiet").arg("ssh.service");
+    let output = cmd.output()?;
+    Ok(output.status.success())
+}
+
+pub fn set_ssh_enabled(enabled: bool) -> Result<(), io::Error> {
+    if ssh_enabled()? == enabled {
+        return Ok(());
+    }
+
+    let mut cmd = Command::new("systemctl");
+    if enabled {
+        cmd.arg("start").arg("--quiet").arg("ssh.service");
+        info!("Starting SSH");
+    } else {
+        cmd.arg("stop").arg("--quiet").arg("ssh.service");
+        info!("Stopping SSH");
+    }
+    root::execute_as_root(|| execute_command(&mut cmd))?.and(Ok(()))
+}

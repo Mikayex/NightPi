@@ -9,7 +9,12 @@ pub fn api() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection>
         .and(warp::post())
         .and_then(handlers::poweroff);
 
-    reboot.or(poweroff)
+    let ssh = warp::path!("api" / "system" / "ssh")
+        .and(warp::post())
+        .and(warp::body::json())
+        .and_then(handlers::ssh);
+
+    reboot.or(poweroff).or(ssh)
 }
 
 mod handlers {
@@ -27,6 +32,14 @@ mod handlers {
 
     pub async fn poweroff() -> Result<impl warp::Reply, Infallible> {
         if system::poweroff().is_ok() {
+            Ok(StatusCode::OK)
+        } else {
+            Ok(StatusCode::INTERNAL_SERVER_ERROR)
+        }
+    }
+
+    pub async fn ssh(enable: bool) -> Result<impl warp::Reply, Infallible> {
+        if system::set_ssh_enabled(enable).is_ok() {
             Ok(StatusCode::OK)
         } else {
             Ok(StatusCode::INTERNAL_SERVER_ERROR)

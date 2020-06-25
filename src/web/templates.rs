@@ -1,4 +1,6 @@
+use crate::system;
 use askama::Template;
+use log::warn;
 
 #[derive(Template)]
 #[template(path = "index.html")]
@@ -12,10 +14,17 @@ impl IndexTemplate {
 
 #[derive(Template)]
 #[template(path = "settings.html")]
-pub struct SettingsTemplate {}
+pub struct SettingsTemplate {
+    ssh: bool,
+}
 
 impl SettingsTemplate {
     pub fn new() -> Self {
-        Self {}
+        Self {
+            ssh: system::ssh_enabled().unwrap_or_else(|error| {
+                warn!("Unable to get status for ssh service {}", error);
+                false
+            }),
+        }
     }
 }

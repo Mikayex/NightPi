@@ -63,3 +63,26 @@ pub async fn poweroff() -> Result<(), JsValue> {
 
     Ok(())
 }
+
+#[wasm_bindgen]
+pub async fn set_ssh_enabled(control: web_sys::HtmlInputElement) -> Result<(), JsValue> {
+    let control_guard = scopeguard::guard(control, |control| {
+        control.set_disabled(false);
+    });
+    control_guard.set_disabled(true);
+    let enable = control_guard.checked();
+
+    let client = reqwest::Client::new();
+    let response = client
+        .post(&url("/api/system/ssh"))
+        .json(&enable)
+        .send()
+        .await?;
+
+    if response.status() == reqwest::StatusCode::INTERNAL_SERVER_ERROR {
+        control_guard.set_checked(!enable); //Revert to original value
+        return Err(format!("{}", response.status()).into());
+    }
+
+    Ok(())
+}
