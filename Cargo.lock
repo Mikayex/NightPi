@@ -842,6 +842,7 @@ version = "0.1.0"
 dependencies = [
  "askama",
  "askama_warp",
+ "libc",
  "log 0.4.8",
  "mime_guess 2.0.3",
  "pretty_env_logger",
